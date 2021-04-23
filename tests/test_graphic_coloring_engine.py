@@ -1,4 +1,4 @@
-from graphic_coloring_engine2 import __version__
+from graphic_coloring_engine import __version__
 
 
 def test_version():
