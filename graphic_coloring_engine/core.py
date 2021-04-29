@@ -314,7 +314,7 @@ class ColoringEngine:
             if not self.find_next_layer_to_colorize(layout=layout):
                 should_yield = True
                 if should_yield and self.global_color_constraint:
-                    should_yield = all([constraint_fn(self.layout) for constraint_fn in self.global_color_constraint])
+                    should_yield = all([constraint_fn(layout) for constraint_fn in self.global_color_constraint])
                     if not should_yield:
                         logger.info(f"全局校验失败, {layout}")
                 if should_yield:
