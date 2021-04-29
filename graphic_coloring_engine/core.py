@@ -70,7 +70,7 @@ class Layer:
     order: int  # 值越小越底层
     bbox_coordinate: Coordinate
     type: Literal["image", "text"]
-    polygon: MultiPolygon = field(default=None)
+    polygon: MultiPolygon = field(default=None) # 用于计算碰撞关系
     dominant_colors: List[DominantColor] = field(default_factory=list)  # 图片才有
     color_mutable: bool = field(default=False)  # 是否需要进行配色
     color: Optional[Union[Color, ColorChoice]] = None
@@ -78,15 +78,12 @@ class Layer:
     def __post_init__(self):
         if self.type == "image":
             self.color_mutable = False
+            if not self.dominant_colors:
+                logger.warn(f'image layer {self.order} has empty dominant colors')
+            if not self.color and self.dominant_color_with_highest_ratio:
+                self.color = self.dominant_color_with_highest_ratio
         if not self.polygon:
             self.polygon = MultiPolygon([self.bbox_coordinate.polygon])
-        if not self.color and self.dominant_color_with_highest_ratio:
-            self.color = self.dominant_color_with_highest_ratio
-
-    @staticmethod
-    def from_dict() -> "Layer":
-        # TODO
-        return
 
     @cached_property
     def dominant_color_with_highest_ratio(self) -> Optional[Color]:
