@@ -1,4 +1,4 @@
-from colormath.color_objects import HSLColor, ColorBase, sRGBColor
+from colormath.color_objects import ColorBase, sRGBColor
 from colormath.color_conversions import convert_color
 from PIL import ImageColor
 

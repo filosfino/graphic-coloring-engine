@@ -4,7 +4,7 @@ from shapely.geometry import MultiPolygon
 # GEOMETRY_TYPES
 
 
-class GeomTypeEnum:
+class GeomTypeEnum():
     Point = "Point"
     LineString = "LineString"
     LinearRing = "LinearRing"

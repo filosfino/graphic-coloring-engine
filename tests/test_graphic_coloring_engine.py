@@ -24,7 +24,7 @@ def test_version():
 class TestLayout(TestCase):
     seed = 42
     constants = ColoringEngineConstants()
-    default_allowed_color_set = set([ColorChoice("#000"), ColorChoice("#fff")])
+    default_allowed_color_set = set([ColorChoice(rgb_string="#000"), ColorChoice(rgb_string="#fff")])
     bg_coord = Coordinate(
         xmin=0,
         xmax=100,
@@ -61,14 +61,14 @@ class TestLayout(TestCase):
                 Layer(
                     order=0,
                     bbox_coordinate=self.bg_coord,
-                    dominant_colors=[DominantColor("#1f1f1f", ratio=0.8)],
+                    dominant_colors=[DominantColor(rgb_string="#1f1f1f", ratio=0.8)],
                     type="image",
                 ),
                 # 图片
                 Layer(
                     order=1,
                     bbox_coordinate=self.img_coord,
-                    dominant_colors=[DominantColor("#88F", ratio=0.8)],
+                    dominant_colors=[DominantColor(rgb_string="#88F", ratio=0.8)],
                     type="image",
                 ),
                 # 文字
@@ -103,7 +103,7 @@ class TestLayout(TestCase):
     def test_coloring_engine_init(self):
         # 没有设置额外的约束
         layout = self.build_layout()
-        engine = ColoringEngine(layout, seed=self.seed, constants=self.constants)
+        engine = ColoringEngine(layout=layout, seed=self.seed, constants=self.constants)
         assert engine.get_layer_color_filters(0) is None
         assert engine.get_layer_color_constraint(0) is None
 
@@ -113,7 +113,7 @@ class TestLayout(TestCase):
     def test_coloring_engine_init_with_extra_color(self):
         layout = self.build_layout()
         engine = ColoringEngine(
-            layout, seed=self.seed, constants=self.constants, extra_usable_colors=self.default_allowed_color_set
+            layout=layout, seed=self.seed, constants=self.constants, extra_usable_colors=self.default_allowed_color_set
         )
         assert engine.get_layer_color_filters(0) is None
         assert engine.get_layer_color_constraint(0) is None
@@ -132,7 +132,7 @@ class TestLayout(TestCase):
     def test_coloring_engine_init_with_filter(self):
         layout = self.build_layout()
         engine = ColoringEngine(
-            layout,
+            layout=layout,
             seed=self.seed,
             constants=self.constants,
             extra_usable_colors=self.default_allowed_color_set,
@@ -146,26 +146,63 @@ class TestLayout(TestCase):
     def test_coloring_engine_init_with_constraint(self):
         layout = self.build_layout()
         engine = ColoringEngine(
-            layout,
+            layout=layout,
             seed=self.seed,
             constants=self.constants,
             extra_usable_colors=self.default_allowed_color_set,
             layer_color_constraint_map={2: [lambda color, layout: False]},
-            # global_color_constraint=[],
         )
         assert engine.get_layer_color_constraint(2) is not None
 
         color_schemes = engine.colorize()
         assert len(color_schemes) == 0
 
-    def test_coloring_engine_init_with_global_constraint(self):
+    def test_coloring_engine_init_with_constraint_ctx(self):
         layout = self.build_layout()
+        other_node_colorized = set()
+
+        def build_flag_constraint(layer_order: int):
+            def flag_constraint(color: Color, coloring_engine: ColoringEngine):
+                nonlocal other_node_colorized
+                {
+                    other_node_colorized.add(bool(layer.color))
+                    for layer in coloring_engine.layout.layers
+                    if layer.order != layer_order
+                }
+                return True
+
+            return flag_constraint
+
         engine = ColoringEngine(
-            layout,
+            layout=layout,
             seed=self.seed,
             constants=self.constants,
             extra_usable_colors=self.default_allowed_color_set,
-            global_color_constraint=[lambda layout: Color("#000") == layout.layers[2].color],
+            layer_color_constraint_map={
+                2: [build_flag_constraint(2)],
+                3: [build_flag_constraint(3)],
+            },
         )
         color_schemes = engine.colorize()
         assert len(color_schemes) != 0
+        assert True in other_node_colorized
+        assert False in other_node_colorized
+
+    def test_coloring_engine_init_with_global_constraint(self):
+        layout = self.build_layout()
+        engine = ColoringEngine(
+            layout=layout,
+            seed=self.seed,
+            constants=self.constants,
+            extra_usable_colors=self.default_allowed_color_set,
+            global_color_constraint=[lambda layout: Color(rgb_string="#000") == layout.layers[2].color],
+        )
+        color_schemes = engine.colorize()
+        assert len(color_schemes) != 0
+
+    def test_layout_getter(self):
+        layout = self.build_layout()
+        assert 2 in layout
+        assert layout[2]
+        assert 10 not in layout
+        assert not layout[10]

@@ -28,7 +28,7 @@ class TestLayout(TestCase):
         layer = Layer(
             order=0,
             bbox_coordinate=self.bg_coord,
-            dominant_colors=[DominantColor("#FFF", ratio=0.8)],
+            dominant_colors=[DominantColor(rgb_string="#FFF", ratio=0.8)],
             color_mutable=False,
             type="image",
         )
@@ -42,7 +42,7 @@ class TestLayout(TestCase):
             order=0,
             bbox_coordinate=self.bg_coord,
             polygon=MultiPolygon([polygon]),
-            dominant_colors=[DominantColor("#FFF", ratio=0.8)],
+            dominant_colors=[DominantColor(rgb_string="#FFF", ratio=0.8)],
             color_mutable=False,
             type="image",
         )
@@ -54,8 +54,8 @@ class TestLayout(TestCase):
             order=0,
             bbox_coordinate=self.bg_coord,
             dominant_colors=[
-                DominantColor("#340", ratio=0.6),
-                DominantColor("#404", ratio=0.3),
+                DominantColor(rgb_string="#340", ratio=0.6),
+                DominantColor(rgb_string="#404", ratio=0.3),
             ],
             type="image",
         )
@@ -63,9 +63,9 @@ class TestLayout(TestCase):
             order=1,
             bbox_coordinate=self.img_coord,
             dominant_colors=[
-                DominantColor("#efF", ratio=0.4),
-                DominantColor("#a8a", ratio=0.2),
-                DominantColor("#803", ratio=0.1),
+                DominantColor(rgb_string="#efF", ratio=0.4),
+                DominantColor(rgb_string="#a8a", ratio=0.2),
+                DominantColor(rgb_string="#803", ratio=0.1),
             ],
             type="image",
         )
@@ -98,6 +98,6 @@ class TestLayout(TestCase):
         )
         self.assert_match_snapshot(layout.layer_collision_map)
         self.assert_match_snapshot([x.polygon.svg() for x in layout.layers])
-        assert 背景.color == Color("#340")
-        assert 图片.color == Color("#efF")
+        assert 背景.color == Color(rgb_string="#340")
+        assert 图片.color == Color(rgb_string="#efF")
         assert 文字.color is None

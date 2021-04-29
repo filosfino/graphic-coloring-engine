@@ -113,6 +113,12 @@ class Layout:
         self.layers = sorted(self.layers, key=lambda l: l.order)  # 从底往顶排序
         self.layer_collision_map = self._collision_detection()
 
+    def __getitem__(self, order: int) -> Optional[Layer]:
+        return self.layer_map.get(order)
+
+    def __contains__(self, order: int) -> bool:
+        return order in self.layer_map
+
     @cached_property
     def layer_map(self) -> Dict[int, Layer]:
         return _.key_by(self.layers, lambda l: l.order)
@@ -271,7 +277,7 @@ class ColoringEngine:
                     color_filter_fn(candidate_color)
                     new_layer_usable_colors.append(candidate_color)
                 except ColoringEngineError as e:
-                    logger.info(e.msg)
+                    logger.info(e)
             layer_usable_colors = new_layer_usable_colors
         layer_logger.info(f"layer_usable_colors: filtered {self.usable_colors}")
 
@@ -283,7 +289,7 @@ class ColoringEngine:
                 try:
                     color_validation_fn(color_choice)
                 except ColoringEngineError as e:
-                    logger.info(e.msg)
+                    logger.info(e)
                     return False
             # 来自 collision 的约束
             return all(
