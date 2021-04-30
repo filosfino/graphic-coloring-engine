@@ -101,3 +101,8 @@ class TestLayout(TestCase):
         assert 背景.color == Color(rgb_string="#340")
         assert 图片.color == Color(rgb_string="#efF")
         assert 文字.color is None
+
+        assert 2 in layout
+        assert layout[2]
+        assert 10 not in layout
+        assert not layout[10]

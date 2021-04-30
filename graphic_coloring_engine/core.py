@@ -104,7 +104,7 @@ class Layout:
     layers: List[Layer]
 
     # layer 碰撞矩阵
-    layer_collision_map: Dict[int, List[int]] = field(default_factory=lambda: defaultdict(list), init=False)
+    layer_collision_map: Dict[int, Set[int]] = field(default_factory=lambda: defaultdict(list), init=False)
 
     def __post_init__(self):
         self.layers = sorted(self.layers, key=lambda l: l.order)  # 从底往顶排序
@@ -126,7 +126,7 @@ class Layout:
         for _layer in self.layers:
             logger.debug(f"{_layer.order} {_layer.polygon}")
 
-        layer_collision_map = DefaultDict(set)
+        layer_collision_map = defaultdict(set)
         # 按绘制顺序更新每层的 polygon
         logger.debug("开始更新图层的展示区域 polygon")
         for i, layer in enumerate(self.layers):
@@ -159,6 +159,7 @@ class Layout:
                     # 更新碰撞矩阵
                     layer_collision_map[layer.order].add(prev_layer.order)
                     layer_collision_map[prev_layer.order].add(layer.order)
+
         logger.debug(f"初步碰撞计算结果")
         for _layer in self.layers:
             logger.debug(f"{_layer.order} {_layer.polygon}")
@@ -279,19 +280,19 @@ class ColoringEngine:
         layer_logger.info(f"layer_usable_colors: filtered {self.usable_colors}")
 
         # 验证函数
-        def color_validation_fn(color_choice: ColorChoice) -> bool:
+        def color_validation_fn(_color_choice: ColorChoice) -> bool:
             # 来自外部的约束
-            color_validation_fn = self.get_layer_color_constraint(next_layer.order)
-            if color_validation_fn:
+            _color_validation_fn = self.get_layer_color_constraint(next_layer.order)
+            if _color_validation_fn:
                 try:
-                    color_validation_fn(color_choice)
+                    _color_validation_fn(_color_choice)
                 except ColoringEngineError as e:
                     logger.info(e)
                     return False
             # 来自 collision 的约束
             return all(
                 (
-                    layer.color.contrast(color_choice) > self.constants.文字与背景的最小对比度
+                    layer.color.contrast(_color_choice) > self.constants.文字与背景的最小对比度
                     for layer in _.filter_(
                         [
                             layout.layer_map[collision_layer_order]

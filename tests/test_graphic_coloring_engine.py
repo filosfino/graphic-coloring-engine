@@ -199,10 +199,3 @@ class TestLayout(TestCase):
         )
         color_schemes = engine.colorize()
         assert len(color_schemes) != 0
-
-    def test_layout_getter(self):
-        layout = self.build_layout()
-        assert 2 in layout
-        assert layout[2]
-        assert 10 not in layout
-        assert not layout[10]
