@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "graphic-coloring-engine"
-version = "0.1.7"
+version = "0.1.9"
 description = "graphic coloring engine"
 authors = ["filosfino <github@filosfino.com>"]
 license = "MIT"
@@ -11,6 +11,10 @@ classifiers = [
 homepage = "https://github.com/filosfino/graphic-coloring-engine"
 repository = "https://github.com/filosfino/graphic-coloring-engine.git"
 
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+
 [tool.poetry.dependencies]
 python = "^3.7.10"
 Shapely = "^1.7.1"
@@ -19,22 +23,17 @@ pydash = "^5.0.0"
 typing-extensions = "^3.7.4"
 Pillow = "^8.2.0"
 cached-property = "^1.5.2"
-importlib-metadata = {version = "^4.0.1", python = "<3.8"}
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
 flake8 = "^3.9.1"
 pytest = "^6.2.3"
 snapshottest = "^0.6.0"
+pysocks = "^1.7.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[[tool.poetry.source]]
-name = "douban"
-url = "https://pypi.doubanio.com/simple/"
-default = true
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/filosfino/graphic-coloring-engine/issues"
