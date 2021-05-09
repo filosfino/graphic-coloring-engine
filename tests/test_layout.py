@@ -51,7 +51,7 @@ class TestLayout(TestCase):
 
     def test_layout_init(self):
         背景 = Layer(
-            order=0,
+            order=2,
             bbox_coordinate=self.bg_coord,
             dominant_colors=[
                 DominantColor(rgb_string="#340", ratio=0.6),
@@ -70,7 +70,7 @@ class TestLayout(TestCase):
             type="image",
         )
         文字 = Layer(
-            order=2,
+            order=0,
             bbox_coordinate=self.text_coord,
             polygon=MultiPolygon(
                 [

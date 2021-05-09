@@ -1,10 +1,7 @@
 from shapely.geometry import MultiPolygon
 
-# from shapely.geometry.base import GEOMETRY_TYPES
-# GEOMETRY_TYPES
 
-
-class GeomTypeEnum():
+class GeomTypeEnum:
     Point = "Point"
     LineString = "LineString"
     LinearRing = "LinearRing"
@@ -15,7 +12,9 @@ class GeomTypeEnum():
     GeometryCollection = "GeometryCollection"
 
 
-def multi_polygon_difference(polygon_a: MultiPolygon, polygon_b: MultiPolygon) -> MultiPolygon:
+def multi_polygon_difference(
+    polygon_a: MultiPolygon, polygon_b: MultiPolygon
+) -> MultiPolygon:
     diff = polygon_a.difference(polygon_b)
     if diff.type == "Polygon":
         return MultiPolygon([diff])
