@@ -1,6 +1,9 @@
 import logging
+
 from shapely.geometry.multipolygon import MultiPolygon
 from shapely.geometry.polygon import Polygon
+from snapshottest import TestCase
+
 from graphic_coloring_engine.core import (
     Color,
     ColorChoice,
@@ -11,14 +14,8 @@ from graphic_coloring_engine.core import (
     Layer,
     Layout,
 )
-from graphic_coloring_engine import __version__
-from snapshottest import TestCase
 
 logger = logging.getLogger(__name__)
-
-
-def test_version():
-    assert __version__ == "0.1.0"
 
 
 class TestLayout(TestCase):
