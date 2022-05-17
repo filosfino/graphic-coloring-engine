@@ -21,7 +21,7 @@ Shapely = "^1.7.1"
 colormath = "^3.0.0"
 pydash = "^5.0.0"
 typing-extensions = "^3.7.4"
-Pillow = "^8.2.0"
+Pillow = ">=8.2,<10.0"
 cached-property = "^1.5.2"
 
 [tool.poetry.dev-dependencies]
